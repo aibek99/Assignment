@@ -1,7 +1,6 @@
 package arraylist;
 
 import java.util.Collection;
-import java.util.List;
 
 interface MyList<E extends Comparable<E>> {
     void add(E e);
@@ -20,6 +19,24 @@ public class MyArrayList<E extends Comparable<E>> implements MyList<E> {
     public MyArrayList() {
         array = (E[]) new Comparable[defaultSize];
         size = 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public MyArrayList(Collection<? extends E> c) {
+        super();
+        E[] a = (E[]) c.toArray();
+        if (a.length == 0) return;
+        int newCapacity = a.length;
+        assert this.array != null;
+        if (newCapacity > this.array.length) {
+            E[] elements = (E[])new Comparable[newCapacity];
+            System.arraycopy(this.array, 0, elements, 0, size);
+            System.arraycopy(a, 0, elements, 0, a.length);
+            this.array = elements;
+        } else {
+            System.arraycopy(a, 0, this.array, 0, a.length);
+        }
+        size = newCapacity;
     }
 
     private int newCapacity(int capacity) {
@@ -75,7 +92,7 @@ public class MyArrayList<E extends Comparable<E>> implements MyList<E> {
         } else {
             System.arraycopy(a, 0, this.array, size, a.length);
         }
-        size = array.length;
+        size = newCapacity;
         return true;
     }
 
